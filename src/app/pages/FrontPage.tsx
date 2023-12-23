@@ -26,13 +26,16 @@ const FrontPage = () => {
   const [memberIsSelected, toggleMember] = useMembersSelected();
 
   return (
-    <div className="flex flex-col items-center justify-center h-screen">
-      <div className="text-6xl mb-8">Belyi</div>
-      <div className="flex gap-2">
+    <div className="flex flex-col h-screen w-screen">
+      <div className="flex-grow flex items-center justify-center">
+        <div className="text-6xl">Rnadom</div>
+      </div>
+      <div className="flex justify-around items-center w-full px-4 pb-4">
         {wholeFamily.map((name) => (
           <button
             key={name}
-            className={`px-4 py-2 rounded focus:outline-none ${memberIsSelected(name) ? FAMILY_COLORS[name] : 'bg-gray-200'}`}
+            style={{backgroundColor: memberIsSelected(name) ? FAMILY_COLORS[name] : '#e5e7eb'}} // #e5e7eb is the equivalent of bg-gray-200
+            className="px-4 py-2 rounded focus:outline-none"
             onClick={() => toggleMember(name)}
           >
             {name}
@@ -41,6 +44,6 @@ const FrontPage = () => {
       </div>
     </div>
   );
-};;
+};
 
 export default FrontPage;

@@ -1,11 +1,11 @@
 // Define the colors associated with each state
 $state-colors: (
-        state1: #ff0000, // Replace with your color
-        state2: #00ff00, // Replace with your color
-        state3: #0000ff, // Replace with your color
-        state4: #ffff00, // Replace with your color
-        state5: #ff00ff, // Replace with your color
-        state6: #00ffff, // Replace with your color
+  igor: #ff0000, // Replace with your color
+  kass: #00ff00, // Replace with your color
+  katya: #0000ff, // Replace with your color
+  leo: #ffff00, // Replace with your color
+  syd: #ff00ff, // Replace with your color
+  tanya: #00ffff, // Replace with your color
 );
 
 $blur-radius: 80px;
@@ -47,7 +47,7 @@ $blob-radius: 150px;
 
 // Dynamically add box shadows based on active states
 @each $state, $color in $state-colors {
-  .#{'state-' + $state}::before {
+  .#{$state + '-background'}::before {
     box-shadow: blob-shadow($color);
   }
 }
