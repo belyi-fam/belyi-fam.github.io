@@ -1,0 +1,53 @@
+// Define the colors associated with each state
+$state-colors: (
+        state1: #ff0000, // Replace with your color
+        state2: #00ff00, // Replace with your color
+        state3: #0000ff, // Replace with your color
+        state4: #ffff00, // Replace with your color
+        state5: #ff00ff, // Replace with your color
+        state6: #00ffff, // Replace with your color
+);
+
+$blur-radius: 80px;
+$spread-radius: 100px;
+$blob-radius: 150px;
+
+// Function to generate box shadow
+@function blob-shadow($color) {
+  @return 0 0 $blur-radius $spread-radius $color;
+}
+
+// Generate classes for each state
+@each $state, $color in $state-colors {
+  .#{$state + '-background'} {
+    box-shadow: blob-shadow($color);
+  }
+}
+
+// Base styling for the container
+.background-container {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+
+  // Create a pseudo-element for the background
+  &::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -50%;
+    bottom: -50%;
+    left: -50%;
+    background: inherit;
+    z-index: -1;
+    mix-blend-mode: screen; // Ensures colors blend together
+  }
+}
+
+// Dynamically add box shadows based on active states
+@each $state, $color in $state-colors {
+  .#{'state-' + $state}::before {
+    box-shadow: blob-shadow($color);
+  }
+}
