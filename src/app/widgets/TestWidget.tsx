@@ -1,5 +1,5 @@
 import React from 'react';
-import { Widget } from '@/app/types';
+import { Widget } from '@/common/types';
 
 export interface TestWidgetProps {
 

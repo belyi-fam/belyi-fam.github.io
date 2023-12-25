@@ -1,4 +1,4 @@
-import { Widget } from '@/app/types';
+import { Widget } from '@/common/types';
 import TestWidget from '@/app/widgets/TestWidget';
 
 const widgets: Widget[] = [
