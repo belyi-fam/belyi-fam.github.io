@@ -1,53 +1,372 @@
-// Define the colors associated with each state
-$state-colors: (
-  igor: #ff0000, // Replace with your color
-  kass: #00ff00, // Replace with your color
-  katya: #0000ff, // Replace with your color
-  leo: #ffff00, // Replace with your color
-  syd: #ff00ff, // Replace with your color
-  tanya: #00ffff, // Replace with your color
-);
+//// Define the colors associated with each state
+//$state-colors: (
+//  igor: #ff0000, // Replace with your color
+//  kass: #00ff00, // Replace with your color
+//  katya: #0000ff, // Replace with your color
+//  leo: #ffff00, // Replace with your color
+//  syd: #ff00ff, // Replace with your color
+//  tanya: #00ffff, // Replace with your color
+//);
+//
+//$blur-radius: 80px;
+//$spread-radius: 100px;
+//$blob-radius: 150px;
+//
+//// Function to generate box shadow
+//@function blob-shadow($color) {
+//  @return 0 0 $blur-radius $spread-radius $color;
+//}
+//
+//// Generate classes for each state
+//@each $state, $color in $state-colors {
+//  .#{$state + '-background'} {
+//    box-shadow: blob-shadow($color);
+//  }
+//}
+//
+//// Base styling for the container
+//.background-container {
+//  width: 100%;
+//  height: 100%;
+//  position: relative;
+//  overflow: hidden;
+//
+//  // Create a pseudo-element for the background
+//  &::before {
+//    content: '';
+//    position: absolute;
+//    top: -50%;
+//    right: -50%;
+//    bottom: -50%;
+//    left: -50%;
+//    background: inherit;
+//    z-index: -1;
+//    mix-blend-mode: screen; // Ensures colors blend together
+//  }
+//}
+//
+//// Dynamically add box shadows based on active states
+//@each $state, $color in $state-colors {
+//  .#{$state + '-background'}::before {
+//    box-shadow: blob-shadow($color);
+//  }
+//}
 
-$blur-radius: 80px;
-$spread-radius: 100px;
-$blob-radius: 150px;
+//$blur-radius: 80px;
+//$spread-radius: 100px;
+//$blob-radius: 150px;
+//$t: $blob-radius;
+//$speed: 4;
+//
+//
+//// Un-translate the coordinate.
+//@function t($d) {
+//  @return calc($d + $t);
+//}
+//
+//@function rand($limit, $u) {
+//  @return random() * $limit * $u;
+//}
+//
+//
+//@function dim ($u, $x) {
+//  @return ($x * rand(100, $u)) - (50 * $u);
+//}
+//
+//@function from-shadow($c, $x) {
+//  @return shadow(dim(1vw, $x), dim(1vh, $x), $blur-radius, $spread-radius, $c);
+//}
+//
+//@function to-shadow($c, $x) {
+//  @return shadow(dim(1vw, $x), dim(1vh, $x), $blur-radius, $spread-radius, $c);
+//}
+//
+//@function shadow($x, $y, $b, $s, $c) {
+//  @return t($x) t($y) $b $s $c;
+//}
+//
+///**
+// size at least wise
+// */
+//@function full-box-box-shadow ($n, $c, $x) {
+//  $value: '#{from-shadow($c, $x)}';
+//  @for $i from 2 through $n {
+//    $value: '#{$value} , #{from-shadow($c, $x)}';
+//  }
+//  @return unquote($value)
+//}
+//
+//@function multiple-box-shadow ($n, $c) {
+//  $value: '#{rand(100, 1vw)} #{rand(100, 1vh)} #{$blur-radius} #{$spread-radius} #{$c}';
+//  @for $i from 2 through $n {
+//    $value: '#{$value} , #{rand(100, 1vw)} #{rand(100, 1vh)} #{$blur-radius} #{$spread-radius} #{$c}';
+//  }
+//  @return unquote($value)
+//}
+//
+//
+//@function outer-random($n) {
+//  @return (random($n) /* - ($n / 2)) */* 2);
+//}
+//
+//@function multiple-outer-box-shadow ($n, $c) {
+//  $value: '#{outer-random(100)}vw #{outer-random(100)}vh #{$blur-radius} #{$spread-radius} #{$c}';
+//  @for $i from 2 through $n {
+//    $value: '#{$value} , #{outer-random(100)}vw #{outer-random(100)}vh #{$blur-radius} #{$spread-radius} #{$c}';
+//  }
+//  @return unquote($value)
+//}
+//
+//@function rnd($n) {
+//  // make this 0 and $n 0 inclusive
+//  @return random($n + 1) - 1
+//}
+//
+//@function getTriangulatedLists() {
+//  $number-of-elements: 10;
+//  $length: 6;
+//
+//  $colors: #361e1e, #230000, #150000, #340202;
+//
+//  //$colors: #00ff2a, blue, yellow;
+//  // $colors: #230000, #230000, #150000, rgba(35, 11, 11, 0.71);
+//
+//  //$color: nth($colors, rnd(length($colors)));
+//
+//  $color: nth($colors, 1);
+//  $xi: rnd(100) - 50;
+//  $yi: rnd(100) - 50;
+//  $xo: $length * (rnd(100) - 50);
+//  $yo: $length * (rnd(100) - 50);
+//  $xf: $xi - $xo;
+//  $yf: $yi - $yo;
+//  $initial: '#{shadow($xf * 1vw, $yf * 1vh, $blur-radius, $spread-radius, $color)}';
+//  $inner: '#{shadow($xi * 1vw, $yi * 1vh, $blur-radius, $spread-radius, $color)}';
+//  $outer: '#{shadow($xo * 1vw, $yo * 1vh, $blur-radius, $spread-radius, $color)}';
+//  @for $i from 2 through $number-of-elements {
+//    $color: nth($colors, ($i % length($colors)) + 1);
+//
+//
+//    $xi: rnd(100);
+//    $yi: rnd(100);
+//    $xo: $length * (rnd(100) - 50);
+//    $yo: $length * (rnd(100) - 50);
+//    $xf: $xo - $xi;
+//    $yf: $yo - $yi;
+//    $initial: '#{$initial}, #{shadow($xf * 1vw, $yf * 1vh, $blur-radius, $spread-radius, $color)}';
+//    $inner: '#{$inner}, #{shadow($xi * 1vw, $yi * 1vh, $blur-radius, $spread-radius, $color)}';
+//    $outer: '#{$outer}, #{shadow($xo * 1vw, $yo * 1vh, $blur-radius, $spread-radius, $color)}';
+//  }
+//
+//  @return [unquote($initial), unquote($inner), unquote($outer)];
+//}
+//
+//#blobs {
+//  background-color: rgba(#000000, 0);
+//  width: 100%;
+//  height: 100%;
+//  position: absolute;
+//  top: 50%;
+//  left: 50%;
+//  transform: translate(-50%, -50%);
+//  opacity: 1;
+//  z-index: 0;
+//
+//  ::before {
+//    content: '';
+//
+//    transform: translate(-2 * $t, -2 * $t);
+//    display: block;
+//    height: $blob-radius * 2;
+//    // margin-top: -22vh;
+//    width: $blob-radius * 2;
+//    border-radius: 50%;
+//    background-color: rgba(0, 1, 1, 1);
+//    opacity: 1;
+//    position: relative;
+//    z-index: -10;
+//    //box-shadow: 0vw 100vh $black, 0 50vh $black, 0 100vh $black, 0 100vh $black,
+//    //            50vw 0vh $black, 50vw 50vh $black, 50vw 100vh $black,
+//    //            100vw 0vh $black, 100vw 50vh $black, 100vw 100vh $black;
+//    //box-shadow: from-shadow($black);
+//    //box-shadow: t(0vw) t(100vh) $black, t(0vw) t(50vh) $black;
+//    //box-shadow:
+//    //        shadow(0vw, 0vh, 0, 0, $black),
+//    //        shadow(0vw, 50vh, 0, 0, $black);
+//
+//
+//
+//    $lists: getTriangulatedLists();
+//    $initial: nth($lists, 1);
+//    box-shadow: $initial;
+//
+//    // box-shadow: multiple-box-shadow(200, $ternary-font-color);//0 0 $white, 50vh 100px $white, 150px 250px $white, 0 0 $white, 250px 100px $white, 0 0 $white;
+//    animation: animBlobs 180s linear infinite !important;
+//    // -webkit-animation: animStar 150s linear infinite !important;
+//  }
+//}
+//
+////$inner:
+////        full-box-box-shadow(5, #361e1e, 2),
+////        full-box-box-shadow(5, #230000, 2),
+////        full-box-box-shadow(15, #150000, 2),
+////        full-box-box-shadow(5, #340202, 2);
+////
+////$initial, $inner, $outer: getTriangulatedLists();
+////
+////@error $initial, '||||||', $inner, '|||||||', $outer;
+////
+////// @debug list.nth($inner, 0);
+////@warn $inner;
+////$third: [1px, 2px, 3px];
+////
+////@each $i in $inner {
+////  $n: 1;
+////  @each $e in $i {
+////    @error $e;
+////    @if $n == 2 {
+////      @error $e;
+////    }
+////
+////    $n: $n + 1;
+////  }
+////}
+////
+////$outer:
+////        full-box-box-shadow(5, #230000, 4),
+////        full-box-box-shadow(5, #230000, 4),
+////        full-box-box-shadow(15, #150000, 4),
+////        full-box-box-shadow(5, rgba(35, 11, 11, 0.71), 4);
+////
+//
+//
+//
+//@keyframes animBlobs {
+//  // transform: translate(0, 0px);
+//  $lists: getTriangulatedLists();
+//  $initial: nth($lists, 1);
+//  $inner: nth($lists, 2);
+//  $outer: nth($lists, 3);
+//
+//  0% {
+//    box-shadow: $initial, $inner, $outer;
+//  }
+//
+//  // lmao..... i know
+//  25% {
+//    box-shadow: $inner, $outer, $initial;
+//  }
+//  //50% {
+//  //  box-shadow: $inner, $outer, $initial;
+//  //}
+//
+//  75% {
+//    box-shadow: $outer, $initial, $inner;
+//  }
+//
+//  100% {
+//    box-shadow: $initial, $inner, $outer;
+//  }
+//
+//
+//  //from {
+//  //  box-shadow: $initial, $inner, $outer;
+//  //
+//  //}
+//  //to {
+//  //  //box-shadow: full-box-box-shadow(20, $primary-gradient);
+//  //  //box-shadow: multiple-outer-box-shadow(300, $ternary-font-color);
+//  //  box-shadow: $outer, $inner;
+//  //}
+//}
+//
+//// Stars
+//
+//$white: #ffffff;
+//$blue: #0000ff;
+//$primary-color: #ffffff;
+//$primary-font-color: #ffffff;
+//$secondary-font-color: #ffffff;
+//$ternary-font-color: #ffffff;
+//@function multiple-box-shadow ($n, $c) {
+//  $value: '#{random(2000)}px #{random(20000)}px #{$c}';
+//  @for $i from 2 through $n {
+//    $value: '#{$value} , #{random(2000)}px #{random(2000)}px #{$c}';
+//  }
+//  @return unquote($value)
+//}
+//
+//@function outer-random($n) {
+//  @return ((random($n) - ($n / 2)) * 2);
+//}
+//
+//@function multiple-outer-box-shadow ($n, $c) {
+//  $value: '#{outer-random(2000)}px #{outer-random(20000)}px #{$c}';
+//  @for $i from 2 through $n {
+//    $value: '#{$value} , #{outer-random(2000)}px #{outer-random(2000)}px #{$c}';
+//  }
+//  @return unquote($value)
+//}
+//
+//
+//
+//#stars {
+//  background-color: rgba($blue, 0);
+//  width: 100%;
+//  height: 100%;
+//  position: absolute;
+//  top: 50%;
+//  left: 50%;
+//  transform: translate(-50%, -50%);
+//  opacity: 1;
+//  z-index: 20;
+//
+//  ::before {
+//    content: '';
+//
+//    display: block;
+//    height: 2px;
+//    width: 2px;
+//    border-radius: 50%;
+//    background-color: $ternary-font-color;
+//    opacity: 1;
+//    position: relative;
+//    z-index: 10;
+//
+//    box-shadow: multiple-box-shadow(200, $ternary-font-color);//0 0 $white, 50vh 100px $white, 150px 250px $white, 0 0 $white, 250px 100px $white, 0 0 $white;
+//    animation: animStar 90s linear infinite !important;
+//
+//     -webkit-animation: animStar 150s linear infinite !important;
+//  }
+//}
+//
+//@keyframes animStar {
+//  // transform: translate(0, 0px);
+//  from {
+//    box-shadow: multiple-box-shadow(100, $ternary-font-color),
+//    multiple-box-shadow(100, $secondary-font-color),
+//    multiple-box-shadow(100, $primary-color),
+//    multiple-box-shadow(100, $white);
+//  }
+//  to {
+//    //box-shadow: multiple-outer-box-shadow(300, $ternary-font-color);
+//    box-shadow: multiple-outer-box-shadow(100, $ternary-font-color),
+//    multiple-outer-box-shadow(100, $secondary-font-color),
+//    multiple-outer-box-shadow(100, $primary-color),
+//    multiple-outer-box-shadow(100, $white);
+//  }
+//}
 
-// Function to generate box shadow
-@function blob-shadow($color) {
-  @return 0 0 $blur-radius $spread-radius $color;
-}
 
-// Generate classes for each state
-@each $state, $color in $state-colors {
-  .#{$state + '-background'} {
-    box-shadow: blob-shadow($color);
-  }
-}
+  //::before {
+  //  content: '';
+  //  background-color: $white;
+  //  display: block;
+  //  width: 100px;
+  //  height: 100px;
+  //  top: 100px;
+  //  bottom: 100px;
+  //  left: 100px;
+  //  right: 100px;
+  //}
 
-// Base styling for the container
-.background-container {
-  width: 100%;
-  height: 100%;
-  position: relative;
-  overflow: hidden;
-
-  // Create a pseudo-element for the background
-  &::before {
-    content: '';
-    position: absolute;
-    top: -50%;
-    right: -50%;
-    bottom: -50%;
-    left: -50%;
-    background: inherit;
-    z-index: -1;
-    mix-blend-mode: screen; // Ensures colors blend together
-  }
-}
-
-// Dynamically add box shadows based on active states
-@each $state, $color in $state-colors {
-  .#{$state + '-background'}::before {
-    box-shadow: blob-shadow($color);
-  }
-}

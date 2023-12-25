@@ -54,24 +54,30 @@ export const getMembersString = (members: Member[]) => {
   // Adding Syd to the complex dynamics seems very difficult and increases the order
   // of magnitude on the amount of different cases by kind of a lot. He'll have his
   // dedicated page, but not going beyond that.
-  if (members.length === 1 && members[0] === Member.Syd) {
-    return SYD;
-  }
+  if (members.length === 1 && members[0] === Member.Syd) return SYD;
 
   const humanMembers = members.filter((member) => member !== Member.Syd);
   return (humanMembers.length === 0 || humanMembers.length >= 5) ? (
     IGORKASSKATYALEOTANYA
   ) : (
-    (humanMembers as string[]).toSorted().reduce((member, membersString) => membersString + member, '')
+    (humanMembers as string[]).sort((a, b) => a.localeCompare(b)).reduce((acc, member) => acc + member, '')
   );
+};
+
+export const getMembersPrettyString = (members: Member[]): string => {
+  if (members.length === 1 && members[0] === Member.Syd) return SYD;
+
+  return ((members.length === 0) ? humanFamily : members.filter((member) => member !== Member.Syd)).join(', ')
 };
 
 export interface Bio {
   name: string;
   description: string;
-  image: StaticImageData;
+  images: string[];
 }
 
 export interface Widget extends FunctionComponent {
 
 }
+
+export type Optional<T> = T | undefined;

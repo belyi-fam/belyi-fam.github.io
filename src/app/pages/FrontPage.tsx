@@ -1,9 +1,12 @@
 'use client';
 
-import React from 'react';
-import { wholeFamily } from '@/app/types';
-import { FAMILY_COLORS } from '@/app/data/constants';
+import React, { useEffect, useState } from 'react';
+import { wholeFamily } from '@/common/types';
+import { FAMILY_COLORS, LIGHTER_FAMILY_COLORS } from '@/data/colors';
 import useMembersSelected from '@/app/hooks/useMembersSelected';
+
+const UNSELECTED_BUTTON_COLOR = '#2b2b2c';
+const BUTTON_BORDER = '#1f2021';
 
 /**
  * The front page will look very simple. Just a page with the family and
@@ -23,19 +26,31 @@ import useMembersSelected from '@/app/hooks/useMembersSelected';
  * @constructor
  */
 const FrontPage = () => {
-  const [memberIsSelected, toggleMember] = useMembersSelected();
+  const [_, memberIsSelected, toggleMember] = useMembersSelected();
+  const [fadeIn, setFadeIn] = useState(false);
+
+  useEffect(() => {
+    setFadeIn(true);
+  }, []);
 
   return (
     <div className="flex flex-col h-screen w-screen">
       <div className="flex-grow flex items-center justify-center">
-        <div className="text-6xl">Rnadom</div>
+        <div className={`text-6xl ${fadeIn ? 'fade-in' : ''}`}>The Belyi Family</div>
       </div>
-      <div className="flex justify-around items-center w-full px-4 pb-4">
+      <div className="flex justify-around items-center w-full px-4 pb-4" style={{height: '4rem'}}>
         {wholeFamily.map((name) => (
           <button
             key={name}
-            style={{backgroundColor: memberIsSelected(name) ? FAMILY_COLORS[name] : '#e5e7eb'}} // #e5e7eb is the equivalent of bg-gray-200
-            className="px-4 py-2 rounded focus:outline-none"
+            style={{
+              backgroundColor: memberIsSelected(name) ? 'transparent' : UNSELECTED_BUTTON_COLOR,
+              border: '1px solid',
+              borderColor: memberIsSelected(name) ? 'transparent' : BUTTON_BORDER,
+              backgroundImage: memberIsSelected(name) ? `linear-gradient(45deg, ${FAMILY_COLORS[name]}, ${LIGHTER_FAMILY_COLORS[name]})` : 'none',
+              animation: memberIsSelected(name) ? 'gradientAnimation 3s linear infinite' : 'none',
+              backgroundSize: '200% 200%',
+            }}
+            className="px-4 py-2 rounded focus:outline-none transition duration-300 ease-in-out transform hover:scale-105"
             onClick={() => toggleMember(name)}
           >
             {name}

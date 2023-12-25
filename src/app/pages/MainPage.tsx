@@ -30,10 +30,9 @@ With this non-static deployment, we can have more full app features, like persis
 
 const MainPage = () => {
   return (
-    <div className="flex flex-row w-full">
+    <div className="flex flex-col w-full">
       <FrontPage />
-
-      {/*<BioPage />*/}
+      <BioPage />
       {/*<WidgetPage />*/}
       { /* Blobs Background */ }
       <BlurBackground />

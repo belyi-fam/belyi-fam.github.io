@@ -8,8 +8,8 @@ import {
   KASSLEOTANYA, KASSTANYA, KATYA, KATYALEO, KATYALEOTANYA, KATYATANYA, LEO, LEOTANYA,
   Member, SYD,
   TANYA,
-} from '../types';
-import { getRandom } from '../util/random';
+} from '@/common/types';
+import { getRandom, randomize } from '@/util/random';
 import {
   bestFamilyImage,
   familyBetterThaiDinnerImage,
@@ -171,7 +171,7 @@ import {
   sydLaptopImage,
   sydMovingImage,
   sydWhiskersImage
-} from '../img';
+} from '@/data/images';
 import { StaticImageData } from 'next/image';
 
 const BIO_NAMES: { [membersString: string]: string[] } = {
@@ -184,7 +184,7 @@ const BIO_NAMES: { [membersString: string]: string[] } = {
   [IGORKATYA]: ['The Deep Thinkers'],
   [IGORLEO]: ['The Soccer Squad'],
   [IGORTANYA]: ['The Guardians'],
-  [KASSKATYA]: ['The Queer Kings'],
+  [KASSKATYA]: ['The Rainbow Royals'],
   [KASSLEO]: ['The Last Out of Pentucket'],
   [KASSTANYA]: ['The Conversation Starters'],
   [KATYALEO]: ['The Role-Players'],
@@ -206,43 +206,48 @@ const BIO_NAMES: { [membersString: string]: string[] } = {
   [IGORKATYALEOTANYA]: ['The Adventurers'],
   [KASSKATYALEOTANYA]: ['The Healthy Legs'],
   [IGORKASSKATYALEOTANYA]: ['The Belyi Family', 'The Room Escapists', 'The Syd Watchers'],
+  [SYD]: ['The Cutest Boy'],
 };
 
 const BIO_DESCRIPTIONS: { [membersString: string]: string[] } = {
-  [IGOR]: ['Papa is always hurting.'],
-  [KASS]: [''],
-  [KATYA]: [''],
-  [LEO]: [''],
-  [TANYA]: [''],
-  [IGORKASS]: [''],
-  [IGORKATYA]: [''],
-  [IGORLEO]: [''],
-  [IGORTANYA]: [''],
-  [KASSKATYA]: [''],
-  [KASSLEO]: [''],
-  [KASSTANYA]: [''],
-  [KATYALEO]: [''],
-  [KATYATANYA]: [''],
-  [LEOTANYA]: [''],
-  [IGORKASSKATYA]: [''],
-  [IGORKASSLEO]: [''],
-  [IGORKASSTANYA]: [''],
-  [IGORKATYALEO]: [''],
-  [IGORKATYATANYA]: [''],
-  [IGORLEOTANYA]: [''],
-  [KASSKATYALEO]: [''],
-  [KASSKATYATANYA]: [''],
-  [KASSLEOTANYA]: [''],
-  [KATYALEOTANYA]: [''],
-  [IGORKASSKATYALEO]: [''],
-  [IGORKASSKATYATANYA]: [''],
-  [IGORKASSLEOTANYA]: [''],
-  [IGORKATYALEOTANYA]: [''],
-  [KASSKATYALEOTANYA]: [''],
-  [IGORKASSKATYALEOTANYA]: [''],
+  [IGOR]: ['Always nursing some injury, but never loses his humor.'],
+  [KASS]: ['The one who leads with charisma and a love for gaming.'],
+  [KATYA]: ['Creative at heart, designs everything from web comics to video games to dreams.'],
+  [LEO]: ['Like a gust of wind, always moving and hard to catch.'],
+  [TANYA]: ['Finds solace in the purrs and quirks of her feline friends.'],
+  [IGORKASS]: ['Together, they redefine gaming with innovative ideas.'],
+  [IGORKATYA]: ['Merging intellect and creativity, they ponder life’s mysteries and think deeply about the forces that govern our universe.'],
+  [IGORLEO]: ['United by their passion for soccer, chess, and all forms of games, they play to win and play until they hurt :)'],
+  [IGORTANYA]: ['Protectors of the family, they moved our lineage across the ocean and started our beautiful journey.'],
+  [KASSKATYA]: ['They are the beautiful siblings who embrace their identity with pride and grace.'],
+  [KASSLEO]: ['The last to leave any challenge, be it in Pentucket or life.'],
+  [KASSTANYA]: ['Sparkling conversations start wherever they go, be it fun thought experiments or spicy debates.'],
+  [KATYALEO]: ['In every role they play, they are imaginative and bring their stories to life.'],
+  [KATYATANYA]: ['The internationally traveling duo, always on a new adventure to expand their worldviews.'],
+  [LEOTANYA]: ['Together they managed to get Leo across the US along the Pacific Crest Trail, Tanya being the quintessential guide and harbinger of treats and supplies and support along the way.'],
+  [IGORKASSKATYA]: ['The trio who love to get into their TV shows, be it Adventure Time, Steven Universe, Severance, or The Simpsons, they love to dive into stories and love to talk and theorize about them.'],
+  [IGORKASSLEO]: ['The tech wizards, always ready to solve the next puzzle using the next best technology and who will most likely be the ones most interested on helping develop this website <3'],
+  [IGORKASSTANYA]: ['Together, they navigated the challenges of a global pandemic being stuck in the Emery House together.'],
+  [IGORKATYALEO]: ['Free-spirited and adventurous, exploring life without limits and experiencing everything and anything that expands their worldviews.'],
+  [IGORKATYATANYA]: ['The wisest among the groups, sharing stories of yester-years, and were the first to trail-blaze the Belyi Family dynamic.'],
+  [IGORLEOTANYA]: ['Journeying through life’s ups and downs with resilience and the most travelled among the family.'],
+  [KASSKATYALEO]: ['Bonded in silliness and sibling camaraderie, they are the kids who spent many a road trip in the back of the car, playing video games, listening to music, and sharing all of the laughs.'],
+  [KASSKATYATANYA]: ['Their creativity knows no bounds, inspiring all with their artistic spirits and wow-ing everyone with their beautiful creations.'],
+  [KASSLEOTANYA]: ['Solving equations and life\'s puzzles with equal ease from their experiences in math-letics.'],
+  [KATYALEOTANYA]: ['Trailblazers, literally and metaphorically, hiking their way through the mountains and stopping along the way to enjoy the views.'],
+  [IGORKASSKATYALEO]: ['Masters of fun, turning every moment into a laugh and loving to joke around any chance they can get.'],
+  [IGORKASSKATYATANYA]: ['East Coast vibes, bringing warmth and joy and aggressive driving wherever they go.'],
+  [IGORKASSLEOTANYA]: ['Board game enthusiasts, strategizing for fun and life, and always being the ones most willing to agree to a 4-hour board game.'],
+  [IGORKATYALEOTANYA]: ['Adventure is their middle name, seeking thrills in every corner.'],
+  [KASSKATYALEOTANYA]: ['Healthy and active, they’re always on the move, and (for now) all have legs that have not been replaced just yet.'],
+  [IGORKASSKATYALEOTANYA]: ['The Belyi Family, mastering escape rooms, binge-watching Syd’s adventures, watching Russian cartoons, extending Duolingo streaks, visiting Leo wherever he goes, and staying true as the family that came from Russia.'],
+  [SYD]: ['With his undeniable charm, meows, and kibble-catching, he wins over everyone he meets and entrances everyone with his dashing good looks, and mesmerizing eyes.'],
 };
 
-const BIO_IMAGES: { [membersString: string]: StaticImageData[] } = {
+/**
+ * Map of the membersStrings the public paths to the images for the bio.
+ */
+const BIO_IMAGES: { [membersString: string]: string[] } = {
   [IGOR]: [
     papaSanDiegoImage, papaBeachImage, papaSydImage, papaHawaiiImage, papaAmesburyImage, papaBoulderImage,
     papaBridgeImage, papaRamenImage, papaKnifeImage, papaCharadesImage, papaStrawberryImage, papaSecondBeachImage,
@@ -332,11 +337,11 @@ const BIO_IMAGES: { [membersString: string]: StaticImageData[] } = {
  *
  * @param members
  */
-const getBioImage = (members: Member[]): StaticImageData => {
-  let bioImage = undefined;
+const getBioImages = (members: Member[]): string[] => {
+  let bioImages: string[] = [];
   let memberGroups: Member[][] = [members];
 
-  while (bioImage === undefined) {
+  while (bioImages.length === 0) {
     const newMemberGroups: Member[][] = [];
     for (let i = 0; i < memberGroups.length; i++) {
       const memberGroup = memberGroups[i];
@@ -348,19 +353,14 @@ const getBioImage = (members: Member[]): StaticImageData => {
       }
     }
 
-    memberGroups = newMemberGroups;
-
-    const possibleBioImages = [];
     for (let i = 0; i < memberGroups.length; i++) {
-      possibleBioImages.push(...BIO_IMAGES[getMembersString(memberGroups[i])]);
+      bioImages.push(...BIO_IMAGES[getMembersString(memberGroups[i])]);
     }
 
-    if (possibleBioImages.length > 0) {
-      bioImage = getRandom(possibleBioImages);
-    }
+    memberGroups = newMemberGroups;
   }
 
-  return bioImage;
+  return randomize(bioImages);
 };
 
 export const getBio = (members: Member[]): Bio => {
@@ -369,6 +369,6 @@ export const getBio = (members: Member[]): Bio => {
   return {
     name: getRandom(BIO_NAMES[membersString]),
     description: getRandom(BIO_DESCRIPTIONS[membersString]),
-    image: getBioImage(members),
+    images: getBioImages(members),
   };
 };
