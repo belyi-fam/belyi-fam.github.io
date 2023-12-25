@@ -16,3 +16,11 @@ export const LIGHTER_FAMILY_COLORS = {
   [SYD]: '#dca2a2',
   [TANYA]: '#c7dce8',
 };
+export const DARKER_FAMILY_COLORS = {
+  [IGOR]: '#001c01',
+  [KASS]: '#452d03',
+  [KATYA]: '#3e023b',
+  [LEO]: '#023521',
+  [SYD]: '#2c0202',
+  [TANYA]: '#01263e',
+};

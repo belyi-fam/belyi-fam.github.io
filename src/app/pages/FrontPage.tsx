@@ -34,7 +34,7 @@ const FrontPage = () => {
   }, []);
 
   return (
-    <div className="flex flex-col h-screen w-screen">
+    <div className="flex flex-col h-screen w-screen relative">
       <div className="flex-grow flex items-center justify-center">
         <div className={`text-6xl ${fadeIn ? 'fade-in' : ''}`}>The Belyi Family</div>
       </div>

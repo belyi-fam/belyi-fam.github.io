@@ -49,7 +49,7 @@ const BioPage = () => {
   };
 
   return (
-    <div className="flex w-full h-screen p-2" style={{ height: 'calc(100vh - 5rem)' }}>
+    <div className="flex w-full h-screen p-2 relative" style={{ height: 'calc(100vh - 5rem)' }}>
       {bio ? (
         <>
           {/* Left Half - Image */}

@@ -1,12 +1,68 @@
 //// Define the colors associated with each state
-//$state-colors: (
-//  igor: #ff0000, // Replace with your color
-//  kass: #00ff00, // Replace with your color
-//  katya: #0000ff, // Replace with your color
-//  leo: #ffff00, // Replace with your color
-//  syd: #ff00ff, // Replace with your color
-//  tanya: #00ffff, // Replace with your color
-//);
+$igor: rgba(#026106, 0.4);
+$kass: rgba(#845503, 0.4);
+$katya: rgba(#71026b, 0.4);
+$leo: rgba(#036a41, 0.4);
+$syd: rgba(#5a0202, 0.4);
+$tanya: rgba(#023658, 0.4);
+$background-color: rgba(#000000, 0.6); // Replace with your actual background color
+
+@mixin linear-gradient-at-angle($start-color, $angle) {
+  background: linear-gradient($angle, $start-color, rgba($start-color, 0));
+}
+
+$base-angle: random(360) * 1deg; // Random starting angle
+
+#blur-background {
+  // Overlay styles
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: -1;
+  background: $background-color;
+}
+
+.gradient-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  opacity: 0; // Start as invisible
+  transition: opacity 0.3s;
+
+  &.leo-background {
+    @include linear-gradient-at-angle($leo, $base-angle);
+  }
+
+  &.igor-background {
+    @include linear-gradient-at-angle($igor, $base-angle + 60deg);
+  }
+
+  &.kass-background {
+    @include linear-gradient-at-angle($kass, $base-angle + 120deg);
+  }
+
+  &.katya-background {
+    @include linear-gradient-at-angle($katya, $base-angle + 180deg);
+  }
+
+  &.syd-background {
+    @include linear-gradient-at-angle($syd, $base-angle + 240deg);
+  }
+
+  &.tanya-background {
+    @include linear-gradient-at-angle($tanya, $base-angle + 300deg);
+  }
+
+  // Class to make the layer visible
+  &.visible {
+    opacity: 1;
+  }
+}
+
 //
 //$blur-radius: 80px;
 //$spread-radius: 100px;
