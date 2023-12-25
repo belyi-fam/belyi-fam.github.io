@@ -49,42 +49,53 @@ const BioPage = () => {
   };
 
   return (
-    <div className="flex w-full h-screen p-2 relative" style={{ height: 'calc(100vh - 5rem)' }}>
+    <div className="flex flex-col sm:flex-row w-full h-screen p-2 relative" style={{height: 'calc(100vh - 5rem)'}}>
       {bio ? (
         <>
-          {/* Left Half - Image */}
-          {bio ? (
-            <div className="relative w-1/2 h-full p-2" onClick={changeImage}>
-              {/* Ensuring 1:1 aspect ratio with rounded edges */}
-              <div className="relative w-full h-0 pb-[100%] rounded-md overflow-hidden">
-                {bio.images.map((image, index) => (
-                  <div
-                    key={image}
-                    className={`absolute inset-0 ${index !== currentImageIndex ? 'hidden' : ''}`}
-                  >
-                    <Image
-                      src={image}
-                      alt={bio.name}
-                      layout="fill"
-                      objectFit="cover"
-                      className="absolute inset-0"
-                    />
-                  </div>
-                ))}
-                {/* Refresh icon overlay */}
-                {bio.images.length > 1 && (
-                  <div className="absolute bottom-2 right-2">
-                    <FontAwesomeIcon icon={faRedo} className="h-6 w-6 text-gray-700"/>
-                  </div>
-                )}
-              </div>
-            </div>
-          ) : (
-            <div>Loading...</div>
-          )}
+          {/* Bio Header and Subtitle for Small Screens */}
+          <div className="sm:hidden w-full flex flex-col p-4">
+            <h1 className="text-3xl text-left mb-1">
+              {bio.name}
+            </h1>
+            <p className="text-left italic mb-2 font-thin text-gray-500">
+              {getMembersPrettyString(membersSelected as Member[])}
+            </p>
+          </div>
 
-          {/* Right Half - Bio Name and Description */}
-          <div className="w-1/2 h-full flex flex-col p-4">
+          {/* Image */}
+          <div className="relative w-full sm:w-1/2 p-2" onClick={changeImage}>
+            <div className="relative w-full h-0 pb-[100%] rounded-md overflow-hidden">
+              {bio.images.map((image, index) => (
+                <div
+                  key={image}
+                  className={`absolute inset-0 ${index !== currentImageIndex ? 'hidden' : ''}`}
+                >
+                  <Image
+                    src={image}
+                    alt={bio.name}
+                    layout="fill"
+                    objectFit="cover"
+                    className="absolute inset-0"
+                  />
+                </div>
+              ))}
+              {bio.images.length > 1 && (
+                <div className="absolute bottom-2 right-2">
+                  <FontAwesomeIcon icon={faRedo} className="h-6 w-6 text-gray-700"/>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Description for Small Screens */}
+          <div className="sm:hidden w-full flex flex-col p-4">
+            <p className="text-left">
+              {bio.description}
+            </p>
+          </div>
+
+          {/* Bio Name and Description for Large Screens */}
+          <div className="hidden sm:flex w-full sm:w-1/2 h-full flex-col p-4">
             <h1 className={`${bio.name.length > 20 ? 'text-xl' : 'text-3xl'} text-left mb-1`}>
               {bio.name}
             </h1>

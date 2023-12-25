@@ -36,7 +36,7 @@ const FrontPage = () => {
   return (
     <div className="flex flex-col h-screen w-screen relative">
       <div className="flex-grow flex items-center justify-center">
-        <div className={`text-6xl ${fadeIn ? 'fade-in' : ''}`}>The Belyi Family</div>
+        <div className={`text-6xl text-center ${fadeIn ? 'fade-in' : ''}`}>The Belyi Family</div>
       </div>
       <div className="flex justify-around items-center w-full px-4 pb-4" style={{height: '4rem'}}>
         {wholeFamily.map((name) => (
