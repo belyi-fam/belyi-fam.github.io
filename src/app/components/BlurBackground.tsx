@@ -13,7 +13,7 @@ const BlurBackground = () => {
   return (
     <div id="blur-background" className={backgroundClassName}>
       {wholeFamily.map((member) => (
-        <div className={`gradient-layer ${member.toLowerCase()}-background${memberIsSelected(member) ? ' visible' : ''}`} />
+        <div key={member} className={`gradient-layer ${member.toLowerCase()}-background${memberIsSelected(member) ? ' visible' : ''}`} />
       ))}
     </div>
   );
