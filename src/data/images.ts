@@ -110,7 +110,7 @@ const papaSecondBeachImage = '/img/image_0772.jpeg';
 const sydCuteImage = '/img/image_0773.jpeg';
 const mamaLeoAirportImage = '/img/image_0774.jpeg';
 const mamaPapaKatyaMountainImage = '/img/image_0775.jpeg';
-const papaKatyaBrightImage = '/img/image_0776.jpeg';
+const papaKassBrightImage = '/img/image_0776.jpeg';
 const leoMouthDeepImage = '/img/image_0777.jpeg';
 const kassMamaSecondStrawberriesImage = '/img/image_0778.jpeg';
 const sydMovingImage = '/img/image_0779.jpeg';
@@ -158,7 +158,11 @@ const leoPapaKassHawaiiImage = '/img/part0 3.jpeg';
 const leoPapaKassHawaiiGameImage = '/img/part0 4.jpeg';
 const leoPapaKassHawaiiShipImage = '/img/Resized_20211121_093523.jpeg';
 const papaMamaSDHikeImage = '/img/Resized_20221112_152723.jpeg';
-const leoPapaKatyaKbbqImage = '/img/Resized_20221112_190334.jpeg'
+const leoPapaKatyaKbbqImage = '/img/Resized_20221112_190334.jpeg';
+const mamaKassSalisburyBeach = '/img/DSC0263.JPG';
+const papaKassSalisburyBeach = '/img/DSC0261.JPG';
+const kassSalisburyBeach = '/img/DSC0253.JPG';
+const papaSalisburyBeach = '/img/DSC0246.JPG';
 
 export {
   kassMamaKatyaPeaceImage, kassLeoKatyaPeaceImage, papaMamaSydImage, katyaPapaMamaBeachImage,
@@ -191,7 +195,7 @@ export {
   mamaKatyaKassPapaImage, katyaGoatImage, kassMamaPapaPeachesImage,
   kassMamaSecondStrawberriesImage, mamaSydImage, mamaPapaOtherRaceImage, sydBagImage,
   papaSecondBeachImage, sydCuteImage, mamaLeoAirportImage, mamaPapaKatyaMountainImage,
-  papaKatyaBrightImage, leoMouthDeepImage, kassMamaStrawberriesImage, sydMovingImage,
+  papaKassBrightImage, leoMouthDeepImage, kassMamaStrawberriesImage, sydMovingImage,
   papaSmilingBeachImage, mamaPapaKassHikingImage, kassPapaMamaSydImage, sydWhiskersImage,
   katyaOculusImage, sydLaptopImage,
   joshTreeImage, katyaKassCarImage, mamaPapaCrossImage, notLeoInSanDiegoImage,
@@ -204,5 +208,6 @@ export {
   papaHawaiiImage, papaKatyaJTreeImage, papaKatyaTanyaImage, mamaPapaKassLeoHawaiiImage,
   mamaPapaKassLeoTunnelImage, leoPapaBackpackingImage, leoPapaKassHawaiiImage,
   leoPapaKassHawaiiGameImage, leoPapaKassHawaiiShipImage, papaMamaSDHikeImage,
-  leoPapaKatyaKbbqImage
+  leoPapaKatyaKbbqImage, mamaKassSalisburyBeach, papaKassSalisburyBeach, kassSalisburyBeach,
+  papaSalisburyBeach
 }
