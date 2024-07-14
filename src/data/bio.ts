@@ -135,7 +135,7 @@ import {
   papaKassLookingImage,
   papaKassPeaceImage,
   papaKassSecondBeachImage,
-  papaKatyaBrightImage,
+  papaKassBrightImage,
   papaKatyaBuildingImage,
   papaKatyaHikingImage,
   papaKatyaJTreeImage,
@@ -170,9 +170,12 @@ import {
   sydFriedImage,
   sydLaptopImage,
   sydMovingImage,
-  sydWhiskersImage
+  sydWhiskersImage,
+  papaKassSalisburyBeach,
+  mamaKassSalisburyBeach,
+  kassSalisburyBeach,
+  papaSalisburyBeach
 } from '@/data/images';
-import { StaticImageData } from 'next/image';
 
 const BIO_NAMES: { [membersString: string]: string[] } = {
   [IGOR]: ['The Always Hurting One'],
@@ -251,11 +254,12 @@ const BIO_IMAGES: { [membersString: string]: string[] } = {
   [IGOR]: [
     papaSanDiegoImage, papaBeachImage, papaSydImage, papaHawaiiImage, papaAmesburyImage, papaBoulderImage,
     papaBridgeImage, papaRamenImage, papaKnifeImage, papaCharadesImage, papaStrawberryImage, papaSecondBeachImage,
-    papaSmilingBeachImage, papaSydPhoneImage, papaSydYogurtImage, papaBlueberriesImage, papaSydHelpingImage
+    papaSmilingBeachImage, papaSydPhoneImage, papaSydYogurtImage, papaBlueberriesImage, papaSydHelpingImage,
+    papaSalisburyBeach
   ],
   [KASS]: [
     kassSanDiegoImage, kassCharadesImage, kassPeacePicture, kassSDPicture, kassSydSkypePicture, kassSydDoorPicture,
-    kassMaineImage, kassSydWavingImage, kassSydCuteImage
+    kassMaineImage, kassSydWavingImage, kassSydCuteImage, kassSalisburyBeach
   ],
   [KATYA]: [katyaSDHikeImage, katyaCatImage, katyaStuckImage, katyaGoatImage, katyaOculusImage],
   [LEO]: [leoHawaiiImage, leoRedRocksImage, leoMouthDeepImage],
@@ -265,11 +269,11 @@ const BIO_IMAGES: { [membersString: string]: string[] } = {
   ],
   [IGORKASS]: [
     kassPapaRocksImage, papaKassBostonImage, papaKassBeachImage, papaKassLookingImage, papaKassSecondBeachImage,
-    kassPapaBeachImage, papaKassPeaceImage, kassPapaWoodsImage
+    kassPapaBeachImage, papaKassPeaceImage, kassPapaWoodsImage, papaKassSalisburyBeach, papaKassBrightImage
   ],
   [IGORKATYA]: [
     papaKatyaBuildingImage, papaKatyaJTreeImage, katyaPapaHikeImage, katyaPapaSDHikeImage, katyaPapaGoatImage,
-    papaKatyaHikingImage, papaKatyaBrightImage
+    papaKatyaHikingImage
   ],
   [IGORLEO]: [leoPapaBackpackingImage, papaLeoChessImage, papaLeoBennettChessImage, leoPapaUtahImage],
   [IGORTANYA]: [
@@ -281,15 +285,15 @@ const BIO_IMAGES: { [membersString: string]: string[] } = {
   [KASSKATYA]: [katyaKassCarImage, kassKatyaSydImage, katyaKassTalkingImage],
   [KASSLEO]: [kassLeoTrickPicture],
   [KASSTANYA]: [
-    mamaKassCatEarsImage, mamaKatyaPictureImage, kassMamaBostonImage, kassMamaStrawberriesImage,
-    kassMamaSecondStrawberriesImage, mamaKassBabyPicture
+    mamaKassCatEarsImage, kassMamaBostonImage, kassMamaStrawberriesImage,
+    kassMamaSecondStrawberriesImage, mamaKassBabyPicture, mamaKassSalisburyBeach
   ],
   [KATYALEO]: [
     leoKatyaPierImage, katyaLeoGradImage, katyaLeoSDHikeImage, katyaLeoAhahaImage,
     katyaLeoNoodleImage, katyaLeoMassHikeImage, katyaLeoSethImage, katyaLeoChefImage,
     katyaLeoBeachImage, katyaLeoSDPictureImage, katyaLeoTropicalImage, katyaLeoSDWalkingImage
   ],
-  [KATYATANYA]: [katyaMamaSDImage, mamaKatyaCatPicture],
+  [KATYATANYA]: [mamaKatyaPictureImage, katyaMamaSDImage, mamaKatyaCatPicture],
   [LEOTANYA]: [mamaLeoHawaiiImage, mamaLeoAirportImage],
   [IGORKASSKATYA]: [kassPapaKatyaNorthamptonImage],
   [IGORKASSLEO]: [leoPapaKassHawaiiImage, leoPapaKassHawaiiGameImage, leoPapaKassHawaiiShipImage],
