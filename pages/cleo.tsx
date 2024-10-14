@@ -39,7 +39,7 @@ const Cleo = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-r from-black to-purple-900">
+    <div className="min-h-screen bg-gradient-to-r from-black to-purple-900 text-white">
       <div className="max-w-7xl mx-auto px-4 py-8">
         <header className="text-center mb-8">
           <h1 className="text-4xl font-bold text-purple-500 mb-2">Meet Cleo</h1>
