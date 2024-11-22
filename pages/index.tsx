@@ -1,8 +1,23 @@
-import React from 'react';
-import MainPage from '@/app/pages/MainPage';
+import React, { useState } from 'react';
+import GameView from '../src/labyrinth/GameView';
+import Maker from '../src/labyrinth/Maker';
 
-const HomePage = () => {
-  return <MainPage />;
+const Home: React.FC = () => {
+  const [view, setView] = useState<'home' | 'game' | 'maker'>('home');
+
+  if (view === 'game') {
+    return <GameView />;
+  } else if (view === 'maker') {
+    return <Maker />;
+  }
+
+  return (
+    <div style={{ textAlign: 'center' }}>
+      <h1 style={{ fontSize: '72px', marginTop: '50px' }}>Leo's Labyrinth</h1>
+      <button onClick={() => setView('game')}>Play AI Game</button>
+      <button onClick={() => setView('maker')}>Be the Dungeon Master</button>
+    </div>
+  );
 };
 
-export default HomePage;
+export default Home;
