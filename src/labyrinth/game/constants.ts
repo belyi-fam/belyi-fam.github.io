@@ -7,7 +7,10 @@ export const MAZE_CONSTANTS = {
 };
 
 export const PLAYER_CONSTANTS = {
-  NAMES: ['Alice', 'Bob', 'Charlie', 'Diana', 'Eve', 'Frank', 'Bear'],
-  COLORS: ['red', 'blue', 'green', 'yellow', 'purple', 'orange', 'brown'],
+  NAMES: ['Alice', 'Bob', 'Charlie', 'Diana', 'Eve', 'Frank', 'Bear', 'Ghost'],
+  COLORS: ['red', 'blue', 'green', 'yellow', 'purple', 'orange', 'brown', '#666'],
   BEAR_INDEX: 6,  // The index of the Bear in the NAMES array
+  GHOST_INDEX: 7,
+  // Helper to check if a player is an NPC (Bear or Ghost)
+  isNPC: (index: number) => index === 6 || index === 7
 };

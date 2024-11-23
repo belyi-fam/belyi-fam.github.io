@@ -47,10 +47,12 @@ export class Game {
   }
 
   nextTurn() {
-    this.currentPlayerIndex = (this.currentPlayerIndex + 1) % this.players.length;
-    if (this.currentPlayerIndex === 0) {
-      this.turn += 1;
-    }
+    do {
+      this.currentPlayerIndex = (this.currentPlayerIndex + 1) % this.players.length;
+      if (this.currentPlayerIndex === 0) {
+        this.turn += 1;
+      }
+    } while (PLAYER_CONSTANTS.isNPC(this.currentPlayerIndex)); // Skip NPC turns
   }
 
   movePlayer(direction: number): GameResponse {
@@ -58,26 +60,32 @@ export class Game {
     const player = this.getCurrentPlayer();
     const directionName = this.directionNames[direction];
     const bear = this.players[PLAYER_CONSTANTS.BEAR_INDEX];
+    const ghost = this.players[PLAYER_CONSTANTS.GHOST_INDEX];
 
     // Store starting positions for animation
     const startX = player.x;
     const startY = player.y;
     const bearStartX = bear.x;
     const bearStartY = bear.y;
+    const ghostStartX = ghost.x;
+    const ghostStartY = ghost.y;
 
+    let response: GameResponse;
+
+    // Handle player movement
     if (player.isOutside(this.map.size)) {
       const exitDir = this.getExitDirection();
       if (direction === (exitDir + 2) % 4) {
         const [newX, newY] = this.getPositionFromExit();
         player.x = newX;
         player.y = newY;
-        const response = new GameResponse(player, `${player.name} moved back into the labyrinth.`);
+        response = new GameResponse(player, `${player.name} moved back into the labyrinth.`);
         response.setMove('move', directionName);
         this.gameResponses.push(response);
         this.nextTurn();
         return response;
       } else {
-        const response = new GameResponse(player, `${player.name} can only move back through the exit.`);
+        response = new GameResponse(player, `${player.name} can only move back through the exit.`);
         response.setMove('move', directionName);
         this.gameResponses.push(response);
         this.nextTurn();
@@ -89,39 +97,38 @@ export class Game {
     const space = this.map.grid[y][x];
     const edge = space.edges[direction];
 
-    if (!edge || edge.hasWall) {
-      const response = new GameResponse(player, `${player.name} tried to move ${directionName} but hit a wall.`);
-      response.setMove('move', directionName);
-      this.gameResponses.push(response);
-      this.nextTurn();
-      return response;
+    // Move the player if possible
+    let playerMoved = false;
+    if (edge && !edge.hasWall) {
+      let newX = x;
+      let newY = y;
+
+      switch (direction) {
+        case 0: newY -= 1; break;
+        case 1: newX += 1; break;
+        case 2: newY += 1; break;
+        case 3: newX -= 1; break;
+      }
+
+      // Update player position
+      if (edge.isExit) {
+        player.x = newX;
+        player.y = newY;
+        playerMoved = true;
+      } else if (newX >= 0 && newX < this.map.size && newY >= 0 && newY < this.map.size) {
+        player.x = newX;
+        player.y = newY;
+        playerMoved = true;
+      } else {
+        player.x = -1;
+        player.y = -1;
+        playerMoved = true;
+      }
     }
 
-    // Move the player
-    let newX = x;
-    let newY = y;
-
-    switch (direction) {
-      case 0: newY -= 1; break; // Up
-      case 1: newX += 1; break; // Right
-      case 2: newY += 1; break; // Down
-      case 3: newX -= 1; break; // Left
-    }
-
-    // Update player position
-    if (edge.isExit) {
-      player.x = newX;
-      player.y = newY;
-    } else if (newX >= 0 && newX < this.map.size && newY >= 0 && newY < this.map.size) {
-      player.x = newX;
-      player.y = newY;
-    } else {
-      player.x = -1;
-      player.y = -1;
-    }
-
-    // Move the bear in the same direction if possible
-    if (player !== bear) { // Don't move the bear when it's the bear's turn
+    // Move NPCs regardless of player's move success
+    if (player !== bear && player !== ghost) {
+      // Move bear if there's no wall
       const bearSpace = this.map.grid[bear.y][bear.x];
       const bearEdge = bearSpace.edges[direction];
       
@@ -130,33 +137,50 @@ export class Game {
         let bearNewY = bear.y;
         
         switch (direction) {
-          case 0: bearNewY -= 1; break; // Up
-          case 1: bearNewX += 1; break; // Right
-          case 2: bearNewY += 1; break; // Down
-          case 3: bearNewX -= 1; break; // Left
+          case 0: bearNewY -= 1; break;
+          case 1: bearNewX += 1; break;
+          case 2: bearNewY += 1; break;
+          case 3: bearNewX -= 1; break;
         }
 
-        // Update bear position if it's within bounds
         if (bearNewX >= 0 && bearNewX < this.map.size && 
             bearNewY >= 0 && bearNewY < this.map.size) {
           bear.x = bearNewX;
           bear.y = bearNewY;
-          
-          // Add bear movement animation
           this.animator.addMovement(bear, bearStartX, bearStartY, bearNewX, bearNewY);
         }
       }
+
+      // Move ghost (ignores walls)
+      let ghostNewX = ghost.x;
+      let ghostNewY = ghost.y;
+      
+      switch (direction) {
+        case 0: ghostNewY -= 1; break;
+        case 1: ghostNewX += 1; break;
+        case 2: ghostNewY += 1; break;
+        case 3: ghostNewX -= 1; break;
+      }
+
+      if (ghostNewX >= 0 && ghostNewX < this.map.size && 
+          ghostNewY >= 0 && ghostNewY < this.map.size) {
+        ghost.x = ghostNewX;
+        ghost.y = ghostNewY;
+        this.animator.addMovement(ghost, ghostStartX, ghostStartY, ghostNewX, ghostNewY);
+      }
     }
 
-    // Add player movement animation
-    this.animator.addMovement(player, startX, startY, player.x, player.y);
-
-    // Update response message
-    const response = new GameResponse(player, `${player.name} successfully moved ${directionName}`);
+    // Create appropriate response based on player's move
+    if (playerMoved) {
+      response = new GameResponse(player, `${player.name} successfully moved ${directionName}`);
+      this.animator.addMovement(player, startX, startY, player.x, player.y);
+    } else {
+      response = new GameResponse(player, `${player.name} tried to move ${directionName} but hit a wall.`);
+    }
     response.setMove('move', directionName);
 
     // Handle treasure pickup
-    if (this.map.treasure && player.x === this.map.treasure.x && player.y === this.map.treasure.y) {
+    if (playerMoved && this.map.treasure && player.x === this.map.treasure.x && player.y === this.map.treasure.y) {
       player.hasTreasure = true;
       this.map.treasure = null;
       response.message += ` ${player.name} picked up the treasure!`;
@@ -165,10 +189,10 @@ export class Game {
     // Check for close encounters
     this.checkCloseEncounters(response);
 
-    // Handle encounters for both player and bear
+    // Handle encounters for player and NPCs
     this.handleEncounters(player, response);
-    if (player !== bear) {
-      this.handleBearEncounters(response);
+    if (player !== bear && player !== ghost) {
+      this.handleNPCEncounters(response);
     }
 
     this.gameResponses.push(response);
@@ -294,12 +318,12 @@ export class Game {
         }
         
         response.addDeath(player, otherPlayer, hadTreasure);
-        this.respawnPlayer(otherPlayer);
+        this.respawnPlayer(otherPlayer, false);
       }
     }
   }
 
-  respawnPlayer(player: Player) {
+  respawnPlayer(player: Player, keepTreasure: boolean = false) {
     // Get all occupied positions except the respawning player
     const occupiedPositions = this.players
       .filter(p => p !== player)
@@ -314,6 +338,11 @@ export class Game {
     const safePos = this.map.findSafeSpawnPosition(occupiedPositions);
     player.x = safePos.x;
     player.y = safePos.y;
+
+    // Only keep treasure if explicitly specified (default is false)
+    if (!keepTreasure) {
+      player.hasTreasure = false;
+    }
 
     // Add animation for the respawn
     this.animator.addMovement(player, oldX, oldY, safePos.x, safePos.y);
@@ -371,16 +400,43 @@ export class Game {
     return this.animator;
   }
 
-  private handleBearEncounters(response: GameResponse) {
+  private handleNPCEncounters(response: GameResponse) {
     const bear = this.players[PLAYER_CONSTANTS.BEAR_INDEX];
+    const ghost = this.players[PLAYER_CONSTANTS.GHOST_INDEX];
+
+    // Check bear encounters
     for (let i = 0; i < this.players.length; i++) {
-      if (i !== PLAYER_CONSTANTS.BEAR_INDEX) {
+      if (!PLAYER_CONSTANTS.isNPC(i)) {
         const player = this.players[i];
         if (player.x === bear.x && player.y === bear.y) {
           const hadTreasure = player.hasTreasure;
+          if (hadTreasure) {
+            // Drop the treasure at the kill location
+            this.map.treasure = {
+              x: player.x,
+              y: player.y,
+              clone: function() { return this; }
+            };
+            player.hasTreasure = false;
+          }
           response.message += ` The Bear caught and killed ${player.name}!`;
           response.addDeath(bear, player, hadTreasure);
-          this.respawnPlayer(player);
+          this.respawnPlayer(player, false);
+        }
+        if (player.x === ghost.x && player.y === ghost.y) {
+          const hadTreasure = player.hasTreasure;
+          if (hadTreasure) {
+            // Drop the treasure at the kill location
+            this.map.treasure = {
+              x: player.x,
+              y: player.y,
+              clone: function() { return this; }
+            };
+            player.hasTreasure = false;
+          }
+          response.message += ` The Ghost caught and killed ${player.name}!`;
+          response.addDeath(ghost, player, hadTreasure);
+          this.respawnPlayer(player, false);
         }
       }
     }
@@ -419,19 +475,44 @@ export class Game {
   }
 
   private checkCloseEncounters(response: GameResponse) {
+    const bear = this.players[PLAYER_CONSTANTS.BEAR_INDEX];
+    const ghost = this.players[PLAYER_CONSTANTS.GHOST_INDEX];
+
     for (let i = 0; i < this.players.length; i++) {
       const player1 = this.players[i];
       
-      // Check player-player proximity
+      // Skip NPC-NPC proximity checks
+      if (PLAYER_CONSTANTS.isNPC(i)) continue;
+
+      // Check player-player proximity (excluding NPCs)
       for (let j = i + 1; j < this.players.length; j++) {
+        if (PLAYER_CONSTANTS.isNPC(j)) continue;
         const player2 = this.players[j];
         const distance = Math.abs(player1.x - player2.x) + Math.abs(player1.y - player2.y);
-        if (distance <= 2 && distance > 0) {
+        if (distance <= 2) {
           response.addCloseEncounter(
-            `${player1.name} is close to ${player2.name}`,
+            `${player1.name} is ${distance === 0 ? 'in the same space as' : 'close to'} ${player2.name}`,
             distance
           );
         }
+      }
+
+      // Check player-bear proximity
+      const bearDistance = Math.abs(player1.x - bear.x) + Math.abs(player1.y - bear.y);
+      if (bearDistance <= 2) {
+        response.addCloseEncounter(
+          `${player1.name} is ${bearDistance === 0 ? 'DEAD - in the same space as the Bear!' : 'close to the Bear'}`,
+          bearDistance
+        );
+      }
+
+      // Check player-ghost proximity
+      const ghostDistance = Math.abs(player1.x - ghost.x) + Math.abs(player1.y - ghost.y);
+      if (ghostDistance <= 2) {
+        response.addCloseEncounter(
+          `${player1.name} is ${ghostDistance === 0 ? 'DEAD - in the same space as the Ghost!' : 'close to the Ghost'}`,
+          ghostDistance
+        );
       }
 
       // Check player-treasure proximity
@@ -440,7 +521,7 @@ export class Game {
                                Math.abs(player1.y - this.map.treasure.y);
         if (treasureDistance <= 2) {
           response.addCloseEncounter(
-            `${player1.name} is close to the treasure`,
+            `${player1.name} is ${treasureDistance === 0 ? 'on top of' : 'close to'} the treasure`,
             treasureDistance
           );
         }

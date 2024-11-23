@@ -29,6 +29,7 @@ const GameComponent: React.FC<{ initialMap?: Map }> = ({ initialMap }) => {
 
   useEffect(() => {
     if (view !== 'game') return;
+    if (gameRef.current) return;  // Don't reinitialize if game exists
 
     const canvas = canvasRef.current;
     if (canvas) {
@@ -43,9 +44,8 @@ const GameComponent: React.FC<{ initialMap?: Map }> = ({ initialMap }) => {
         for (let i = 0; i < PLAYER_CONSTANTS.NAMES.length; i++) {
           const name = PLAYER_CONSTANTS.NAMES[i];
           const color = PLAYER_CONSTANTS.COLORS[i];
-          const x = Math.floor(Math.random() * MAZE_CONSTANTS.MAP_SIZE);
-          const y = Math.floor(Math.random() * MAZE_CONSTANTS.MAP_SIZE);
-          players.push(new Player(name, x, y, color));
+          const safePos = map.findSafeSpawnPosition(players.map(p => ({ x: p.x, y: p.y })));
+          players.push(new Player(name, safePos.x, safePos.y, color));
         }
 
         const gameInstance = new Game(map, players);
@@ -59,6 +59,23 @@ const GameComponent: React.FC<{ initialMap?: Map }> = ({ initialMap }) => {
   }, [view, initialMap]);
 
   useEffect(() => {
+    const handleResize = () => {
+      const canvas = canvasRef.current;
+      if (canvas && gameRef.current) {
+        canvas.width = window.innerWidth * 0.7;
+        canvas.height = window.innerHeight * 0.6;
+        const ctx = canvas.getContext('2d');
+        if (ctx) {
+          drawMap(gameRef.current.map, ctx, gameRef.current.players);
+        }
+      }
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  useEffect(() => {
     if (game) {
       const winner = game.checkVictory();
       if (winner) {
@@ -69,7 +86,7 @@ const GameComponent: React.FC<{ initialMap?: Map }> = ({ initialMap }) => {
   }, [game?.turn]);
 
   const handleAction = (action: 'move' | 'shoot', direction: number) => {
-    if (game && !isAnimating) {
+    if (game && !isAnimating && !victor) {
       const canvas = canvasRef.current;
       const ctx = canvas?.getContext('2d');
       if (ctx) {
@@ -244,45 +261,50 @@ const GameComponent: React.FC<{ initialMap?: Map }> = ({ initialMap }) => {
         overflow: 'hidden',
       }}
     >
-      {lastResponse && (
-        <div style={{ 
-          width: '300px',
-          padding: '20px',
-          overflowY: 'auto',
-          height: '100vh',
-          borderRight: '1px solid #eee'
+      <div style={{ 
+        minWidth: '300px',
+        width: '300px',
+        flexShrink: 0,
+        padding: '20px',
+        overflowY: 'auto',
+        height: '100vh',
+        borderRight: '1px solid #eee'
+      }}>
+        <h2 style={{ 
+          fontSize: '18px', 
+          marginBottom: '10px',
+          color: '#000'
         }}>
-          <h2 style={{ 
-            fontSize: '18px', 
-            marginBottom: '10px',
-            color: '#333'
-          }}>
-            Game Response:
-          </h2>
-          <p style={{ 
-            marginBottom: '10px',
-            color: '#666'
-          }}>
-            {lastResponse.message}
-          </p>
-          <pre style={{ 
-            fontSize: '12px', 
-            backgroundColor: '#f5f5f5',
-            padding: '10px',
-            borderRadius: '4px',
-            overflow: 'auto',
-            maxHeight: 'calc(100vh - 200px)'
-          }}>
-            {JSON.stringify(lastResponse, null, 2)}
-          </pre>
-        </div>
-      )}
+          Game Response:
+        </h2>
+        <p style={{ 
+          marginBottom: '10px',
+          color: '#000',
+          wordBreak: 'break-word'
+        }}>
+          {lastResponse?.message || "Game started. Waiting for first move..."}
+        </p>
+        <pre style={{ 
+          fontSize: '12px', 
+          backgroundColor: '#f5f5f5',
+          padding: '10px',
+          borderRadius: '4px',
+          overflow: 'auto',
+          maxHeight: 'calc(100vh - 200px)',
+          color: '#000',
+          whiteSpace: 'pre-wrap',
+          wordBreak: 'break-word'
+        }}>
+          {lastResponse ? JSON.stringify(lastResponse, null, 2) : "No moves yet"}
+        </pre>
+      </div>
 
       <div style={{
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
         flex: 1,
+        minWidth: 0,
         padding: '20px'
       }}>
         <div style={{ 
@@ -319,12 +341,22 @@ const GameComponent: React.FC<{ initialMap?: Map }> = ({ initialMap }) => {
             margin: '10px 0'
           }}
         />
+      </div>
 
+      <div style={{ 
+        minWidth: '300px',
+        width: '300px',
+        flexShrink: 0,
+        padding: '20px',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        borderLeft: '1px solid #eee'
+      }}>
         <div style={{ 
           display: 'grid',
           gridTemplateColumns: 'repeat(5, auto)',
           gap: '5px',
-          padding: '10px',
           backgroundColor: 'white',
         }}>
           <div style={{ gridColumn: 3, gridRow: 1 }}>

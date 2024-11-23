@@ -13,26 +13,31 @@ const ReplayView: React.FC<ReplayViewProps> = ({ gameState, onExit }) => {
   const [playbackSpeed, setPlaybackSpeed] = useState(1);
   const [isPlaying, setIsPlaying] = useState(true);
 
+  // Initialize currentTurn to 0 when gameState changes
+  useEffect(() => {
+    setCurrentTurn(0);
+  }, [gameState]);
+
   // Draw the state at the current turn
   useEffect(() => {
     const canvas = canvasRef.current;
-    if (canvas) {
-      canvas.width = window.innerWidth * 0.7;
-      canvas.height = window.innerHeight * 0.6;
-      
-      const ctx = canvas.getContext('2d');
-      if (ctx) {
-        // Create a copy of the game state at this turn
-        const currentState = { ...gameState };
-        // Apply all moves up to the current turn
-        currentState.gameResponses = gameState.gameResponses.slice(0, currentTurn);
-        drawMap(currentState.map, ctx, currentState.players);
-      }
+    if (!canvas || !gameState) return;
+
+    canvas.width = window.innerWidth * 0.7;
+    canvas.height = window.innerHeight * 0.6;
+    
+    const ctx = canvas.getContext('2d');
+    if (ctx) {
+      // Create a copy of the game state at this turn
+      const currentState = { ...gameState };
+      // Apply all moves up to the current turn
+      currentState.gameResponses = gameState.gameResponses.slice(0, currentTurn);
+      drawMap(currentState.map, ctx, currentState.players);
     }
   }, [currentTurn, gameState]);
 
   useEffect(() => {
-    if (!isPlaying) return;
+    if (!isPlaying || !gameState) return;
 
     const interval = setInterval(() => {
       if (currentTurn < gameState.gameResponses.length - 1) {
@@ -43,12 +48,34 @@ const ReplayView: React.FC<ReplayViewProps> = ({ gameState, onExit }) => {
     }, 1000 / playbackSpeed);
 
     return () => clearInterval(interval);
-  }, [currentTurn, playbackSpeed, isPlaying, gameState.gameResponses.length]);
+  }, [currentTurn, playbackSpeed, isPlaying, gameState]);
 
   const handleSliderChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setCurrentTurn(Number(e.target.value));
     setIsPlaying(false);
   };
+
+  if (!gameState || !gameState.gameResponses) {
+    return (
+      <div style={{ textAlign: 'center', padding: '20px' }}>
+        <h2>No replay data available</h2>
+        <button 
+          onClick={onExit}
+          style={{
+            padding: '8px 16px',
+            margin: '4px',
+            backgroundColor: '#f44336',
+            color: 'white',
+            border: 'none',
+            borderRadius: '4px',
+            cursor: 'pointer'
+          }}
+        >
+          Exit
+        </button>
+      </div>
+    );
+  }
 
   return (
     <div style={{
@@ -78,11 +105,11 @@ const ReplayView: React.FC<ReplayViewProps> = ({ gameState, onExit }) => {
         zIndex: 1000,
         boxShadow: '0 -2px 10px rgba(0,0,0,0.1)'
       }}>
-        <div style={{ width: '80%', maxWidth: '800px' }}>
+        <div style={{ width: '80%', maxWidth: '800px', margin: '0 auto' }}>
           <input
             type="range"
             min="0"
-            max={gameState.gameResponses.length - 1}
+            max={Math.max(0, gameState.gameResponses.length - 1)}
             value={currentTurn}
             onChange={handleSliderChange}
             style={{ width: '100%' }}
@@ -136,8 +163,8 @@ const ReplayView: React.FC<ReplayViewProps> = ({ gameState, onExit }) => {
             </button>
           </div>
         </div>
-        <p style={{ marginTop: '20px', fontSize: '18px' }}>
-          Turn {currentTurn + 1}: {gameState.gameResponses[currentTurn]?.message}
+        <p style={{ marginTop: '20px', fontSize: '18px', textAlign: 'center' }}>
+          Turn {currentTurn + 1}: {gameState.gameResponses[currentTurn]?.message || "Starting position"}
         </p>
       </div>
     </div>
