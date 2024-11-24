@@ -1,7 +1,8 @@
 import React, { useRef, useEffect, useState } from 'react';
-import { Game } from '../game/Game';
-import { drawMap } from '../game/draw';
+import { Game } from '../game/game';
+import { Map } from '../game/map';
 import { Player } from '../game/player';
+import { drawMap } from '../game/draw';
 
 const Labyrinth: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -17,13 +18,30 @@ const Labyrinth: React.FC = () => {
 
       const ctx = canvas.getContext('2d');
       if (ctx) {
-        // ... initialization code ...
+        const mapSize = 10;
+        const map = new Map(mapSize);
 
+        // Create Players
+        const playerNames = ['Alice', 'Bob', 'Charlie', 'Diana', 'Eve', 'Frank'];
+        const playerColors = ['red', 'blue', 'green', 'yellow', 'purple', 'orange'];
+        const players: Player[] = [];
+
+        for (let i = 0; i < playerNames.length; i++) {
+          const name = playerNames[i];
+          const color = playerColors[i];
+          const x = Math.floor(Math.random() * mapSize);
+          const y = Math.floor(Math.random() * mapSize);
+          players.push(new Player(name, x, y, color));
+        }
+
+        const gameInstance = new Game(map, players);
         setGame(gameInstance);
         gameRef.current = gameInstance;
         setCurrentPlayer(gameInstance.getCurrentPlayer());
 
-        drawMap(gameRef.current.map, ctx, gameRef.current.players);
+        if (gameRef.current) {
+          drawMap(gameRef.current.map, ctx, gameRef.current.players);
+        }
       }
     }
 
@@ -43,7 +61,11 @@ const Labyrinth: React.FC = () => {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  // ... existing code ...
+  return (
+    <div>
+      <canvas ref={canvasRef} />
+    </div>
+  );
 };
 
 export default Labyrinth; 

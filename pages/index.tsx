@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import GameView from '../src/labyrinth/GameView';
+import GameView from '../src/labyrinth/src/GameView';
 import Maker from '../src/labyrinth/Maker';
 
 const Home: React.FC = () => {
@@ -8,7 +8,7 @@ const Home: React.FC = () => {
   if (view === 'game') {
     return <GameView />;
   } else if (view === 'maker') {
-    return <Maker />;
+    return <Maker onStartGame={() => setView('game')} />;
   }
 
   return (

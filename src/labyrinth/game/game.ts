@@ -204,6 +204,7 @@ export class Game {
     this.saveState();
     const player = this.getCurrentPlayer();
     const directionName = this.directionNames[direction];
+    const ghost = this.players[PLAYER_CONSTANTS.GHOST_INDEX];
 
     if (player.isOutside(this.map.size)) {
       const exitDir = this.getExitDirection();
@@ -246,7 +247,7 @@ export class Game {
       // Check if target position is within bounds
       if (targetX < 0 || targetX >= this.map.size || 
           targetY < 0 || targetY >= this.map.size) {
-        response.message += " and shot into the void.";
+        response.message += " but nothing happened.";
         break;
       }
 
@@ -254,10 +255,15 @@ export class Game {
       const edge = space.edges[direction];
 
       if (!edge || edge.hasWall) {
-        if (targetX === player.x && targetY === player.y) {
+        // Only give detailed message if wall is right next to them
+        const distanceX = targetX - player.x;
+        const distanceY = targetY - player.y;
+        const totalDistance = Math.abs(distanceX) + Math.abs(distanceY);
+        
+        if (totalDistance === 0) {
           response.message += " and hit the wall right next to them!";
         } else {
-          response.message += " and hit a wall.";
+          response.message += " but nothing happened.";
         }
         hitWall = true;
         break;
@@ -276,14 +282,32 @@ export class Game {
       // Check for hits before checking bounds
       for (const otherPlayer of this.players) {
         if (otherPlayer !== player && otherPlayer.x === targetX && otherPlayer.y === targetY) {
+          // Ghost can't be hit by bullets
+          if (otherPlayer === ghost) {
+            continue;
+          }
           hitPlayer = otherPlayer;
           break;
         }
       }
 
+      // If we hit a player (except ghost), stop the bullet
       if (hitPlayer) {
         response.message += ` and hit ${hitPlayer.name}!`;
         response.addDeath(player, hitPlayer, hitPlayer.hasTreasure);
+        
+        // Drop treasure if player had it
+        if (hitPlayer.hasTreasure) {
+          this.map.treasure = {
+            x: hitPlayer.x,
+            y: hitPlayer.y,
+            clone: function() { return this; }
+          };
+          hitPlayer.hasTreasure = false;
+        }
+        
+        // Respawn the hit player
+        this.respawnPlayer(hitPlayer, false);
         break;
       }
     }
@@ -292,7 +316,7 @@ export class Game {
     this.animator.addBulletPath(player, bulletPath);
 
     if (!hitWall && !hitPlayer) {
-      response.message += " but missed.";
+      response.message += " but nothing happened.";
     }
 
     // Check for close encounters after shooting
@@ -336,8 +360,13 @@ export class Game {
     const oldX = player.x;
     const oldY = player.y;
     const safePos = this.map.findSafeSpawnPosition(occupiedPositions);
+    
+    // Update player position
     player.x = safePos.x;
     player.y = safePos.y;
+    
+    // Reset bullets
+    player.bullets = PLAYER_CONSTANTS.STARTING_BULLETS;
 
     // Only keep treasure if explicitly specified (default is false)
     if (!keepTreasure) {

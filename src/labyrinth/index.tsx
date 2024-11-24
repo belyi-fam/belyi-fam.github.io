@@ -17,7 +17,7 @@ import {
   faBullseye  // or faCrosshairs or faCircleDot for bullet icon
 } from '@fortawesome/free-solid-svg-icons';
 
-const GameComponent: React.FC<{ initialMap?: Map }> = ({ initialMap }) => {
+const GameComponent: React.FC<{ initialMap?: Map, loadedGameState?: GameState }> = ({ initialMap, loadedGameState }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [game, setGame] = useState<Game | null>(null);
   const [currentPlayer, setCurrentPlayer] = useState<Player | null>(null);

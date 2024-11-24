@@ -1,5 +1,5 @@
 import React from 'react';
-import { GameStateManager } from '../game/state';
+import { GameState, GameStateManager } from '../game/state';
 
 interface StartViewProps {
   onStartGame: () => void;
