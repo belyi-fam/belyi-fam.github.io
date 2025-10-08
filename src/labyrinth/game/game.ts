@@ -3,6 +3,7 @@ import { Player } from './player';
 import { GameResponse } from './GameResponse';
 import { Animator } from './animate';
 import { MAZE_CONSTANTS, PLAYER_CONSTANTS } from './constants';
+import { Item } from './item';
 
 export class Game {
   map: Map;
@@ -195,6 +196,19 @@ export class Game {
       this.handleNPCEncounters(response);
     }
 
+    // **Add this block to handle item pickups**
+    if (playerMoved) {
+      const itemsAtPosition = this.map.items.filter(item => item.x === player.x && item.y === player.y);
+      for (const item of itemsAtPosition) {
+        if (item.type === 'bullet') {
+          player.bullets += item.amount;
+          response.message += ` ${player.name} picked up ${item.amount} bullet(s)!`;
+          // Remove the item from the map
+          this.map.items.splice(this.map.items.indexOf(item), 1);
+        }
+      }
+    }
+
     this.gameResponses.push(response);
     this.nextTurn();
     return response;
@@ -359,14 +373,24 @@ export class Game {
 
     const oldX = player.x;
     const oldY = player.y;
+
+    // Drop bullets at the death location if the player had any
+    if (player.bullets > 0) {
+      this.map.items.push({
+        x: oldX,
+        y: oldY,
+        type: 'bullet',
+        amount: player.bullets
+      });
+      player.bullets = 0;
+    }
+
     const safePos = this.map.findSafeSpawnPosition(occupiedPositions);
-    
-    // Update player position
     player.x = safePos.x;
     player.y = safePos.y;
-    
-    // Reset bullets
-    player.bullets = PLAYER_CONSTANTS.STARTING_BULLETS;
+
+    // **Add bullets to the player's current bullet count**
+    player.bullets += PLAYER_CONSTANTS.RESPAWN_BULLETS;
 
     // Only keep treasure if explicitly specified (default is false)
     if (!keepTreasure) {
@@ -519,8 +543,9 @@ export class Game {
         const player2 = this.players[j];
         const distance = Math.abs(player1.x - player2.x) + Math.abs(player1.y - player2.y);
         if (distance <= 2) {
+          const proximityDescription = this.getProximityDescription(distance);
           response.addCloseEncounter(
-            `${player1.name} is ${distance === 0 ? 'in the same space as' : 'close to'} ${player2.name}`,
+            `${player1.name} is ${proximityDescription} ${player2.name}`,
             distance
           );
         }
@@ -529,8 +554,9 @@ export class Game {
       // Check player-bear proximity
       const bearDistance = Math.abs(player1.x - bear.x) + Math.abs(player1.y - bear.y);
       if (bearDistance <= 2) {
+        const proximityDescription = this.getProximityDescription(bearDistance);
         response.addCloseEncounter(
-          `${player1.name} is ${bearDistance === 0 ? 'DEAD - in the same space as the Bear!' : 'close to the Bear'}`,
+          `${player1.name} is ${proximityDescription} the Bear`,
           bearDistance
         );
       }
@@ -538,8 +564,9 @@ export class Game {
       // Check player-ghost proximity
       const ghostDistance = Math.abs(player1.x - ghost.x) + Math.abs(player1.y - ghost.y);
       if (ghostDistance <= 2) {
+        const proximityDescription = this.getProximityDescription(ghostDistance);
         response.addCloseEncounter(
-          `${player1.name} is ${ghostDistance === 0 ? 'DEAD - in the same space as the Ghost!' : 'close to the Ghost'}`,
+          `${player1.name} is ${proximityDescription} the Ghost`,
           ghostDistance
         );
       }
@@ -549,12 +576,27 @@ export class Game {
         const treasureDistance = Math.abs(player1.x - this.map.treasure.x) + 
                                Math.abs(player1.y - this.map.treasure.y);
         if (treasureDistance <= 2) {
+          const proximityDescription = this.getProximityDescription(treasureDistance);
           response.addCloseEncounter(
-            `${player1.name} is ${treasureDistance === 0 ? 'on top of' : 'close to'} the treasure`,
+            `${player1.name} is ${proximityDescription} the treasure`,
             treasureDistance
           );
         }
       }
+    }
+  }
+
+  // Add this helper method to interpret distance descriptions
+  private getProximityDescription(distance: number): string {
+    switch (distance) {
+      case 0:
+        return 'on top of';
+      case 1:
+        return 'very close to';
+      case 2:
+        return 'close to';
+      default:
+        return 'far from';
     }
   }
 }

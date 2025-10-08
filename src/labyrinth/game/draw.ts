@@ -221,6 +221,38 @@ export function drawMap(
     }
   }
 
+  // Draw items
+  for (const item of map.items) {
+    const itemX = item.x;
+    const itemY = item.y;
+    const drawX = offsetX + itemX * cellSize + cellSize / 2;
+    const drawY = offsetY + itemY * cellSize + cellSize / 2;
+
+    if (item.type === 'bullet') {
+      // Draw bullet icon
+      ctx.fillStyle = 'silver';
+      ctx.beginPath();
+      ctx.arc(
+        drawX,
+        drawY,
+        cellSize / 6,
+        0,
+        2 * Math.PI
+      );
+      ctx.fill();
+      // Draw the amount of bullets
+      ctx.fillStyle = 'black';
+      ctx.font = `${cellSize / 4}px Arial`;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(
+        item.amount.toString(),
+        drawX,
+        drawY
+      );
+    }
+  }
+
   // Animate movements and bullet shooting
   if (animate) {
     // Implement animation logic here

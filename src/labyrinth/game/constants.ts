@@ -11,6 +11,8 @@ export const PLAYER_CONSTANTS = {
   COLORS: ['red', 'blue', 'green', 'yellow', 'purple', 'orange', 'brown', '#666'],
   BEAR_INDEX: 6,  // The index of the Bear in the NAMES array
   GHOST_INDEX: 7,
+  STARTING_BULLETS: 3,
+  RESPAWN_BULLETS: 3, // Number of bullets to add upon respawning
   // Helper to check if a player is an NPC (Bear or Ghost)
   isNPC: (index: number) => index === 6 || index === 7
 };

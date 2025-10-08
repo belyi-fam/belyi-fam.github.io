@@ -1,6 +1,7 @@
 import { Map } from './map';
 import { Player } from './player';
 import { GameResponse } from './GameResponse';
+import { Item } from './item';
 
 export interface GameState {
   map: Map;
@@ -26,11 +27,19 @@ export interface SerializedEdge {
   isExit: boolean;
 }
 
+export interface SerializedItem {
+  x: number;
+  y: number;
+  type: string;
+  amount: number;
+}
+
 export interface SerializedMap {
   size: number;
   grid: SerializedEdge[][][];  // [y][x][direction]
   exitPosition: { x: number; y: number };
   treasurePosition: { x: number; y: number } | null;
+  items: SerializedItem[];
 }
 
 export interface SerializedGameState {
@@ -60,7 +69,13 @@ export class GameStateManager {
         treasurePosition: state.map.treasure ? {
           x: state.map.treasure.x,
           y: state.map.treasure.y
-        } : null
+        } : null,
+        items: state.map.items.map(item => ({
+          x: item.x,
+          y: item.y,
+          type: item.type,
+          amount: item.amount
+        }))
       },
       players: state.players.map(player => ({
         name: player.name,
@@ -104,6 +119,14 @@ export class GameStateManager {
         clone: function() { return this; }
       };
     }
+
+    // Deserialize items
+    map.items = serialized.map.items.map(itemData => ({
+      x: itemData.x,
+      y: itemData.y,
+      type: itemData.type as 'bullet',
+      amount: itemData.amount
+    }));
 
     // Restore players
     const players = serialized.players.map(p => {

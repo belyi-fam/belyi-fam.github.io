@@ -2,6 +2,7 @@ import { Space } from './space';
 import { Edge } from './edge';
 import { Treasure } from './treasure';
 import { MAZE_CONSTANTS } from './constants';
+import { Item } from './item';
 
 interface OutsideEdge {
   edge: Edge;
@@ -20,6 +21,7 @@ export class Map {
   exitPosition: { x: number; y: number } = { x: 0, y: 0 };
   treasure: Treasure | null;
   outsideEdges: OutsideEdge[] = [];
+  items: Item[] = [];
 
   constructor(size: number) {
     this.size = size;
