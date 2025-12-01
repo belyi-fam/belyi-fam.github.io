@@ -11,7 +11,7 @@ const UNLOCK_HOUR_UTC = 2; // 2am UTC = 7pm MST = 9pm EST
 function getUnlockTime(day: number): Date {
   // Day 1 unlocks on Dec 2, Day 2 on Dec 3, etc.
   // At 2am UTC (which is 7pm MST the previous calendar day)
-  return new Date(Date.UTC(YEAR, 11, day + 2, UNLOCK_HOUR_UTC, 0, 0));
+  return new Date(Date.UTC(YEAR, 11, day + 1, UNLOCK_HOUR_UTC, 0, 0));
 }
 
 function isDayUnlocked(day: number, now: Date): boolean {
@@ -55,6 +55,10 @@ const AOCTimer = () => {
   const nextUnlockTime = nextUnlockDay ? getUnlockTime(nextUnlockDay) : null;
   const timeRemaining = nextUnlockTime ? nextUnlockTime.getTime() - now.getTime() : 0;
 
+  const nextDate = nextUnlockTime ? nextUnlockTime.toLocaleString('en-US', { day: 'numeric', month: 'short', year: 'numeric' }) : "";
+  const nextMST = nextUnlockTime ? nextUnlockTime.toLocaleString('en-US', { hour: 'numeric', timeZone: 'MST', timeZoneName: 'short' }) : "";
+  const nextEST = nextUnlockTime ? nextUnlockTime.toLocaleString('en-US', { hour: 'numeric', timeZone: 'EST', timeZoneName: 'short' }) : "";
+
   return (
     <div className="min-h-screen bg-[#0f0f23] text-[#cccccc] font-mono">
       <div className="max-w-2xl mx-auto px-4 py-8">
@@ -74,7 +78,7 @@ const AOCTimer = () => {
                 {formatTimeRemaining(timeRemaining)}
               </p>
               <p className="text-sm text-[#666666] mt-2">
-                Day {nextUnlockDay} • 7pm MST / 9pm EST
+                Day {nextUnlockDay} • {nextDate} at {nextMST} / {nextEST}
               </p>
             </>
           ) : (
@@ -113,7 +117,7 @@ const AOCTimer = () => {
         </div>
 
         <footer className="text-center mt-8 text-[#666666] text-sm">
-          <p>Puzzles unlock daily at 7pm MST / 9pm EST</p>
+          <p>Puzzles unlock daily at {nextMST} / {nextEST} EST</p>
           <p className="mt-2">
             <a
               href="https://adventofcode.com"
@@ -122,6 +126,15 @@ const AOCTimer = () => {
               className="text-[#009900] hover:text-[#00cc00]"
             >
               adventofcode.com
+            </a>
+            <span>  &#x2014;  </span>
+            <a
+              href="https://adventofcode.com/2025/leaderboard/private/view/987074"
+              target="-blank"
+              rel="noopener noreferrer"
+              className="text-[#000099] hover:text-[#0000cc]"
+            >
+              Leaderboard
             </a>
           </p>
         </footer>
