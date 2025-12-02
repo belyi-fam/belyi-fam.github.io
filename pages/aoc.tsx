@@ -117,7 +117,7 @@ const AOCTimer = () => {
         </div>
 
         <footer className="text-center mt-8 text-[#666666] text-sm">
-          <p>Puzzles unlock daily at {nextMST} / {nextEST} EST</p>
+          <p>Puzzles unlock daily at {nextMST} / {nextEST}</p>
           <p className="mt-2">
             <a
               href="https://adventofcode.com"
